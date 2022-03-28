@@ -38,4 +38,26 @@ type Delegator @entity {
   stakedAmount: BigInt!
   reward: BigInt!
   timestamp: BigInt!
+  validators: [Validator!]
+  delegateRecords: [DelegateRecord!]
+  undelegateRecords: [UndelegateRecord!]
+  withdrawRecords: [WithdrawRecord!]
+  withdrawRewardRecords: [WithdrawRewardRecord!]
+}
+
+
+type DelegateRecord @entity {
+  id:ID! # txHash
+}
+
+type UndelegateRecord @entity {
+  id:ID!
+}
+
+type WithdrawRecord @entity {
+  id:ID!
+}
+
+type WithdrawRewardRecord @entity {
+  id:ID!
 }

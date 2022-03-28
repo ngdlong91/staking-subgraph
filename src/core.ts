@@ -33,7 +33,7 @@ function loadStakingBootInfo(): void {
     }
 }
 
-function updateValidator(validatorSMCAddress: Address): void {
+export function updateValidator(validatorSMCAddress: Address): void {
     let validator = Validator.load(validatorSMCAddress.toString())
     if (!validator) {
         validator = new Validator(validatorSMCAddress.toString())
