@@ -1,0 +1,43 @@
+type Staking @entity {
+    id:ID!
+}
+
+type Params @entity {
+    id:ID!
+}
+
+type StakingStats @entity {
+    id:ID!
+    totalValidator:BigInt!
+    totalProposer:BigInt!
+}
+
+
+type Validator @entity {
+  id: ID! # SMC address
+  name: String!
+  signer: String! # Owner address
+  tokens: BigInt!
+  jailed: Boolean!
+  delegationShares:BigInt!
+  accumulatedCommission:BigInt!
+  ubdEntryCount:BigInt!
+  updateTime:BigInt!
+  minSelfDelegation:BigInt!
+  status:BigInt!
+  unbondingTime:BigInt!
+  unbondingHeight:BigInt!
+  status: BigInt!
+  role: BigInt!
+}
+
+type SigningInfo @entity {
+    id:ID!
+}
+
+type Delegator @entity {
+  id: ID! #Delegator address
+  stakedAmount: BigInt!
+  reward: BigInt!
+  timestamp: BigInt!
+}

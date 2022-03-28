@@ -1,0 +1,64 @@
+specVersion: 0.0.2
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: Staking
+    network: mainnet
+    source:
+      address: "0x0000000000000000000000000000000000001337"
+      abi: Staking
+      startBlock: 1
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Validator
+      abis:
+        - name: Staking
+          file: ./abis/staking.json
+      eventHandlers:
+        - event: CreatedValidator(bytes32,address,uint256,uint256,uint256)
+          handler: handleCreateValidator
+      file: ./src/staking.ts
+templates:
+  - kind: ethereum/contract
+    name: Validator
+    network: mainnet
+    source:
+      abi: Validator
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      file: ./src/validator.ts
+      entities:
+        - Validator
+        - Delegator
+      abis:
+        - name: Staking
+          file: ./abis/staking.json
+        - name: Validator
+          file: ./abis/validator.json
+      eventHandlers:
+        - event: Started()
+          handler: handleCreateValidator
+        - event: Stopped()
+          handler: handleCreateValidator
+        - event: UpdateCommissionRate(uint256)
+          handler: handleCreateValidator
+        - event: UpdateName(bytes32)
+          handler: handleCreateValidator
+        - event: UpdatedSigner(address,address)
+          handler: handleCreateValidator
+        - event: Withdraw(address,uint256)
+          handler: handleCreateValidator
+        - event: WithdrawCommissionReward(uint256)
+          handler: handleCreateValidator
+        - event: Delegate(address,uint256)
+          handler: handleCreateValidator
+        - event: Undelegate(address,uint256,uint256)
+          handler: handleCreateValidator
+        - event: WithdrawRewards(address,uint256)
+          handler: handleCreateValidator

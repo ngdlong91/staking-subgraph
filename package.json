@@ -1,0 +1,16 @@
+{
+  "name": "kardia-staking-subgraph",
+  "repository": "https://github.com/kardiachain/staking-subgraph",
+  "license": "GPL-3.0-or-later",
+  "scripts": {
+    "codegen": "graph codegen --output-dir generated/",
+    "build": "graph build",
+    "create-local": "graph create --node https://graph-dev.kardiachain.io/ kardia/staking",
+    "remove-local": "graph remove --node https://graph-dev.kardiachain.io/  kardia/staking",
+    "deploy-local": "graph deploy --node https://graph-dev.kardiachain.io/ --ipfs https://ipfs-dev.kardiachain.io/ kardia/staking"
+  },
+  "devDependencies": {
+    "@graphprotocol/graph-cli": "0.24.0",
+    "@graphprotocol/graph-ts": "0.24.0"
+  }
+}
