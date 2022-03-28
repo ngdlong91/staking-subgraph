@@ -6,12 +6,13 @@ import {
     Validator as ValidatorSMC
 } from "../generated/templates/Validator/Validator";
 
-import {IS_BOOTSTRAP, STAKING_ADDRESS, StakingID, StakingStatsID} from "./helper";
+import {isInitial, setInitial, STAKING_ADDRESS, StakingID, StakingStatsID} from "./helper";
 import {StakingStats, Validator} from "../generated/schema";
 
 export function init():void {
-    if (!IS_BOOTSTRAP) {
+    if (!isInitial()) {
         loadStakingBootInfo()
+        setInitial(true)
     }
 }
 
@@ -65,6 +66,7 @@ export function updateValidator(validatorSMCAddress: Address): void {
         log.error("commission reverted", [])
     }
 
+    validator.save()
 }
 
 export function getStakingStats(): StakingStats {

@@ -22,8 +22,18 @@ export let MYTHIC_TOTAL_STATS = BigInt.fromI32(187)
 
 export const BURN_ADDRESS = '0x0000000000000000000000000000000000000000'
 export const STAKING_ADDRESS = Address.fromString('0x0000000000000000000000000000000000001337')
+export const PARAMS_ADDRESS = Address.fromString('0x910cbd665263306807e5ace0351e4358dc6164d8')
+export const TREASURY_ADDRESS = Address.fromString('0x008326058f791258342925F0171aE555284e8741')
 
 export const StakingID = 'Staking'
 export const StakingStatsID = 'StakingStats'
 
-export let IS_BOOTSTRAP = true
+let IS_BOOTSTRAP = true
+
+export function isInitial(): boolean {
+    return IS_BOOTSTRAP
+}
+
+export function setInitial(val:boolean): void {
+    IS_BOOTSTRAP = val
+}

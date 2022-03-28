@@ -27,6 +27,8 @@ type Validator @entity {
   status:BigInt!
   unbondingTime:BigInt!
   unbondingHeight:BigInt!
+  # validator pre-init flag
+  isBootValidator:Boolean!
 }
 
 type SigningInfo @entity {
