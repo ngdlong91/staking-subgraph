@@ -27,8 +27,6 @@ type Validator @entity {
   status:BigInt!
   unbondingTime:BigInt!
   unbondingHeight:BigInt!
-  status: BigInt!
-  role: BigInt!
 }
 
 type SigningInfo @entity {

@@ -6,10 +6,16 @@ import {
     Validator as ValidatorSMC
 } from "../generated/templates/Validator/Validator";
 
-import {STAKING_ADDRESS, StakingID, StakingStatsID} from "./helper";
+import {IS_BOOTSTRAP, STAKING_ADDRESS, StakingID, StakingStatsID} from "./helper";
 import {StakingStats, Validator} from "../generated/schema";
 
-export function loadStakingBootInfo(): void {
+export function init():void {
+    if (!IS_BOOTSTRAP) {
+        loadStakingBootInfo()
+    }
+}
+
+function loadStakingBootInfo(): void {
     let stakingSMC = StakingSMC.bind(STAKING_ADDRESS)
     let getAllValidatorResult = stakingSMC.try_getAllValidator()
     if (getAllValidatorResult.reverted) {
@@ -19,7 +25,7 @@ export function loadStakingBootInfo(): void {
 
     let currentValidators = getAllValidatorResult.value
     let validatorLength = currentValidators.length
-    for (let i: number; i < validatorLength; i++) {
+    for (let i=0; i < validatorLength; i++) {
         // Get validator info
         let validatorSMCAddress = currentValidators[i]
         updateValidator(validatorSMCAddress)

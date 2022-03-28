@@ -42,23 +42,23 @@ templates:
         - name: Validator
           file: ./abis/validator.json
       eventHandlers:
-        - event: Started()
-          handler: handleCreateValidator
-        - event: Stopped()
-          handler: handleCreateValidator
-        - event: UpdateCommissionRate(uint256)
-          handler: handleCreateValidator
-        - event: UpdateName(bytes32)
-          handler: handleCreateValidator
-        - event: UpdatedSigner(address,address)
-          handler: handleCreateValidator
-        - event: Withdraw(address,uint256)
-          handler: handleCreateValidator
-        - event: WithdrawCommissionReward(uint256)
-          handler: handleCreateValidator
+#        - event: Started()
+#          handler: handleCreateValidator
+#        - event: Stopped()
+#          handler: handleCreateValidator
+#        - event: UpdateCommissionRate(uint256)
+#          handler: handleCreateValidator
+#        - event: UpdateName(bytes32)
+#          handler: handleCreateValidator
+#        - event: UpdatedSigner(address,address)
+#          handler: handleCreateValidator
+#        - event: Withdraw(address,uint256)
+#          handler: handleCreateValidator
+#        - event: WithdrawCommissionReward(uint256)
+#          handler: handleCreateValidator
         - event: Delegate(address,uint256)
-          handler: handleCreateValidator
+          handler: handleDelegate
         - event: Undelegate(address,uint256,uint256)
-          handler: handleCreateValidator
+          handler: handleUndelegate
         - event: WithdrawRewards(address,uint256)
-          handler: handleCreateValidator
+          handler: handleWithdrawRewards

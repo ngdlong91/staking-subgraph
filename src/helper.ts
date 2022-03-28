@@ -25,3 +25,5 @@ export const STAKING_ADDRESS = Address.fromString('0x000000000000000000000000000
 
 export const StakingID = 'Staking'
 export const StakingStatsID = 'StakingStats'
+
+export let IS_BOOTSTRAP = true
