@@ -1,3 +1,6 @@
 /node_modules/
 /.idea/
 /generated/
+/build/
+/package.json
+/subgraph.yaml
