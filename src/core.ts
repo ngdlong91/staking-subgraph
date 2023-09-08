@@ -1,18 +1,24 @@
 import {Address, BigInt, ethereum, log} from "@graphprotocol/graph-ts";
 import {
-    Staking as StakingSMC
-} from "../generated/Staking/Staking";
+    staking as StakingSMC
+} from "../generated/staking/staking";
 import {
-    Validator as ValidatorSMC
-} from "../generated/templates/Validator/Validator";
+    validator as ValidatorSMC
+} from "../generated/templates/validator/validator";
 
-import {isInitial, setInitial, STAKING_ADDRESS, StakingID, StakingStatsID} from "./helper";
-import {StakingStats, Validator} from "../generated/schema";
+import {isInitial, setInitial, STAKING_ADDRESS, StakingID, StakingStatsID, ZERO_BI} from "./helper";
+import {Staking, StakingStats, Validator} from "../generated/schema";
+import {validator as ValidatorTemplate} from "../generated/templates";
 
 export function init():void {
-    if (!isInitial()) {
+    let stakingStats = StakingStats.load(StakingStatsID)
+    if (!stakingStats) {
+        log.debug("load staking boot info", [])
+        stakingStats = new StakingStats(StakingStatsID)
+        stakingStats.totalProposer = ZERO_BI
+        stakingStats.totalValidator = ZERO_BI
+        stakingStats.save()
         loadStakingBootInfo()
-        setInitial(true)
     }
 }
 
@@ -22,6 +28,7 @@ function loadStakingBootInfo(): void {
     if (getAllValidatorResult.reverted) {
         // Not sure here
         log.error("getAllValidator reverted", [])
+        return
     }
 
     let currentValidators = getAllValidatorResult.value
@@ -29,44 +36,47 @@ function loadStakingBootInfo(): void {
     for (let i=0; i < validatorLength; i++) {
         // Get validator info
         let validatorSMCAddress = currentValidators[i]
-        updateValidator(validatorSMCAddress)
-
+        let validatorOwner = stakingSMC.ownerOf(validatorSMCAddress)
+        loadBootValidator(validatorSMCAddress, validatorOwner)
     }
 }
 
-export function updateValidator(validatorSMCAddress: Address): void {
-    let validator = Validator.load(validatorSMCAddress.toString())
-    if (!validator) {
-        validator = new Validator(validatorSMCAddress.toString())
-    }
-
+function loadBootValidator(validatorSMCAddress: Address, validatorOwner: Address):void {
     let validatorSMC = ValidatorSMC.bind(validatorSMCAddress)
-    let inforValidatorResult = validatorSMC.try_inforValidator()
-    if (inforValidatorResult.reverted) {
-        log.error("inforValidator reverted", [])
+    let validator = Validator.load(validatorOwner.toHexString())
+    if (!validator) {
+        validator = new Validator(validatorOwner.toHexString())
+        ValidatorTemplate.create(validatorSMCAddress)
     }
 
-    let result = inforValidatorResult.value
-    validator.name = result.value0.toString() // []byte > Name
-    validator.signer = result.value1.toString()
-    validator.tokens = result.value2
-    validator.jailed = result.value3
-    validator.delegationShares = result.value4
-    validator.accumulatedCommission = result.value5
-    validator.ubdEntryCount = result.value6
-    validator.updateTime = result.value7
-    validator.minSelfDelegation = result.value8
-    let status = BigInt.fromI32(result.value9)
-    validator.status = status
-    validator.unbondingTime = result.value10
-    validator.unbondingHeight = result.value11
 
+    let inforValidatorResult = validatorSMC.try_inforValidator()
+    if (!inforValidatorResult.reverted) {
+        let result = inforValidatorResult.value
+        validator.name = result.value0.toString() // []byte > Name
+        validator.signer = result.value1.toHexString()
+        validator.accumulatedCommission = result.value5
+        validator.updateTime = result.value7
+        let status = BigInt.fromI32(result.value9)
+        validator.status = status
+    }
+
+    validator = updateValidatorCommission(validator)
+    validator.save()
+}
+
+export function updateValidatorCommission(validator: Validator): Validator {
+    let validatorSMC = ValidatorSMC.bind(Address.fromString(validator.id))
     let commissionResult = validatorSMC.try_commission()
     if (commissionResult.reverted) {
         log.error("commission reverted", [])
     }
+    let commission = commissionResult.value
+    validator.maxRate = commission.value0
+    validator.maxChangeRate = commission.value1
+    validator.rate = commission.value2
 
-    validator.save()
+    return validator
 }
 
 export function getStakingStats(): StakingStats {

@@ -17,18 +17,13 @@ type Validator @entity {
   id: ID! # SMC address
   name: String!
   signer: String! # Owner address
-  tokens: BigInt!
-  jailed: Boolean!
-  delegationShares:BigInt!
-  accumulatedCommission:BigInt!
-  ubdEntryCount:BigInt!
+  status:BigInt!  # Default 1
+  accumulatedCommission:BigInt! # Default = 0
+  maxRate: BigInt!
+  maxChangeRate:BigInt!
+  rate:BigInt!
   updateTime:BigInt!
-  minSelfDelegation:BigInt!
-  status:BigInt!
-  unbondingTime:BigInt!
-  unbondingHeight:BigInt!
-  # validator pre-init flag
-  isBootValidator:Boolean!
+
 }
 
 type SigningInfo @entity {
